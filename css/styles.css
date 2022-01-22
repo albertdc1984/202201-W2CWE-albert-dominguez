@@ -18,3 +18,13 @@ body {
   background-color: white;
   border-radius: 10px;
 }
+table{
+  background-color: white;
+}
+
+td{
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  border-style: solid;s
+}
