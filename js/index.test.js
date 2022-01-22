@@ -1,11 +1,13 @@
 const htmlGenerator = (parameterRow, parameterColumn) => {
   const gameBoard = document.querySelector(".game-container");
   const board = document.createElement("table");
+  const ids = document.setAttribute("id");
+
   for (let i = 0; i < parameterRow; i++) {
     const row = document.createElement("tr");
     for (let j = 0; j < parameterColumn; j++) {
       const column = document.createElement("td");
-      column.setAttribute("dead");
+      column.setAttribute("id", ids + 1);
       row.appendChild(column);
     }
     board.appendChild(row);

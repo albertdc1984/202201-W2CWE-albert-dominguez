@@ -13,18 +13,30 @@ body {
   align-items: center;
 }
 .game-container {
-  width: 70vw;
-  height: 70vh;
   background-color: white;
   border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20vh;
 }
-table{
+table {
   background-color: white;
+  border-style: solid;
+  border-color: grey;
+  border-radius: 10px;
 }
 
-td{
-  width: 5px;
-  height: 5px;
-  border-radius: 1px;
-  border-style: solid;s
+td {
+  width: 3px;
+  height: 3px;
+  border-radius: 5px;
+  border-style: solid;
+  border-color: black;
+}
+td:hover {
+  background-color: black;
+}
+td:checked {
+  background-color: black;
 }
