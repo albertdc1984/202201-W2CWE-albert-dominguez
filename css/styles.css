@@ -20,23 +20,35 @@ body {
   align-items: center;
   margin-bottom: 20vh;
 }
-table {
+.boardDiv {
   background-color: white;
   border-style: solid;
   border-color: grey;
   border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 350px;
+  height: 350px;
 }
 
-td {
+.rowDiv {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.cellDiv {
+  margin: 1px;
   width: 3px;
   height: 3px;
   border-radius: 5px;
   border-style: solid;
   border-color: black;
 }
-td:hover {
+
+.cellDiv:hover {
   background-color: black;
 }
-td:checked {
+.alive {
   background-color: black;
 }
