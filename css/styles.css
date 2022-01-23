@@ -73,6 +73,10 @@ button:hover {
   background-color: black;
   color: white;
 }
+button:active {
+  background-color: white;
+  color: black;
+}
 i {
   font-size: xx-large;
 }

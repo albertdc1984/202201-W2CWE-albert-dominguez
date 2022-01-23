@@ -1,34 +1,36 @@
 const rows = 20;
 const columns = 20;
+const nestedArray = [];
+const nextTable = [];
+const start = document.querySelector(".start-button");
 
-const gameTable = (numberOfColumns, numberOfRows) => {
-  const nestedArray = [];
+const gameTable = (numberOfcolumns, numberOfRows) => {
   for (let i = 0; i < numberOfRows; i++) {
     nestedArray.push([]);
+    nextTable.push([]);
   }
 
-  for (let i = 0; i < numberOfColumns; i++) {
+  for (let i = 0; i < numberOfcolumns; i++) {
     for (let j = 0; j < numberOfRows; j++) {
       nestedArray[i].push(0);
+      nextTable[i].push(0);
     }
   }
   console.table(nestedArray);
   return nestedArray;
 };
 
-const arrayTable = gameTable(rows, columns);
-
 function cellStatus() {
   const location = this.id.split("_");
   const rowLocation = Number(location[0]);
-  const columnLocation = Number(location[1]);
+  const columnumnLocation = Number(location[1]);
 
   if (this.className === "alive") {
     this.setAttribute("class", "dead");
-    arrayTable[rowLocation][columnLocation] = 0;
+    nestedArray[rowLocation][columnumnLocation] = 0;
   } else {
     this.setAttribute("class", "alive");
-    arrayTable[rowLocation][columnLocation] = 1;
+    nestedArray[rowLocation][columnumnLocation] = 1;
   }
 }
 
@@ -58,8 +60,93 @@ const htmlGenerator = (parameterRow, parameterColumn) => {
   gameBoard.appendChild(board);
   return board;
 };
+const neighborCount = (row, column) => {
+  let counter = 0;
+  const iNumber = Number(row);
+  const jNumber = Number(column);
+
+  if (iNumber - 1 >= 0) {
+    if (nestedArray[iNumber - 1][jNumber] === 1) {
+      counter++;
+    }
+  }
+
+  if (iNumber - 1 >= 0 && jNumber - 1 >= 0) {
+    if (nestedArray[iNumber - 1][jNumber - 1] === 1) {
+      counter++;
+    }
+  }
+
+  if (iNumber - 1 >= 0 && jNumber + 1 < columns) {
+    if (nestedArray[iNumber - 1][jNumber + 1] === 1) {
+      counter++;
+    }
+  }
+
+  if (iNumber + 1 < rows && jNumber - 1 >= 0) {
+    if (nestedArray[iNumber + 1][jNumber - 1] === 1) counter++;
+  }
+
+  if (iNumber + 1 < rows && jNumber + 1 < columns) {
+    if (nestedArray[iNumber + 1][jNumber + 1] === 1) counter++;
+  }
+
+  if (iNumber + 1 < rows) {
+    if (nestedArray[iNumber + 1][jNumber] === 1) counter++;
+  }
+
+  return counter;
+};
+function getNextTable() {
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns; j++) {
+      const neighbors = neighborCount(rows, columns);
+
+      if (nestedArray[i][j] === 1) {
+        if (neighbors < 2) {
+          nextTable[i][j] = 0;
+        } else if (neighbors === 2 || neighbors === 3) {
+          nextTable[i][j] = 1;
+        } else if (neighbors > 3) {
+          nextTable[i][j] = 0;
+        }
+      } else if (nestedArray[i][j] === 0) {
+        if (neighbors === 3) {
+          nextTable[i][j] = 1;
+        }
+      }
+    }
+  }
+}
+function updatenestedArray() {
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns; j++) {
+      nestedArray[i][j] = nextTable[i][j];
+
+      nextTable[i][j] = 0;
+    }
+  }
+}
+function updateWorld() {
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns; j++) {
+      const cell = document.getElementById(`${i}_${j}`);
+      if (nestedArray[i][j] === 0) {
+        cell.setAttribute("class", "dead");
+      } else {
+        cell.setAttribute("class", "alive");
+      }
+    }
+  }
+}
+function evolve() {
+  getNextTable();
+  updatenestedArray();
+  updateWorld();
+}
 
 window.onload = () => {
   htmlGenerator(rows, columns);
   gameTable(rows, columns);
+  start.addEventListener("click", evolve());
 };
