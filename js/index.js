@@ -49,9 +49,8 @@ const htmlGenerator = (parameterRow, parameterColumn) => {
       cell.setAttribute("id", `${i}_${j}`);
       cell.setAttribute("class", "dead");
       cell.classList.add(ids);
-      cell.addEventListener("click", cellStatus);
-      cell.addEventListener("mousemove", cellStatus);
       row.appendChild(cell);
+      cell.addEventListener("click", cellStatus);
     }
     board.appendChild(row);
   }
