@@ -20,23 +20,35 @@ const cellBlocks = [
 ];
 const logics = (cellBlock) => {
   for (let i = 1; i < cellBlock.length; i++) {
-    for (let j = 1; cellBlock[0][0].length; j++) {
+    for (let j = 1; cellBlock[i].length; j++) {
       const cell = cellBlock[i][j];
-      let neighbors =
-        cell[i - 1][j - 1] +
-        cell[i - 1][j] +
-        cell[i - 1][j + 1] +
-        cell[i][j - 1] +
-        cell[i][j + 1] +
-        cell[i + 1][j - 1] +
-        cell[i + 1][j] +
-        cell[i + 1][j + 1];
+      if (
+        cell[i - 1][j - 1] &&
+        cell[i - 1][j] &&
+        cell[i - 1][j + 1] &&
+        cell[i][j - 1] &&
+        cell[i][j + 1] &&
+        cell[i + 1][j - 1] &&
+        cell[i + 1][j] &&
+        cell[i + 1][j + 1]
+      ) {
+        let neighbors =
+          cell[i - 1][j - 1] +
+          cell[i - 1][j] +
+          cell[i - 1][j + 1] +
+          cell[i][j - 1] +
+          cell[i][j + 1] +
+          cell[i + 1][j - 1] +
+          cell[i + 1][j] +
+          cell[i + 1][j + 1];
+        if (cell[i - 1][j - 1])
+          if (neighbors < 2 || neighbors > 3) {
+            cell[i][j] = 0;
+            neighbors = 0;
+          }
+      }
 
-      if (cell[i - 1][j - 1])
-        if (neighbors < 2 || neighbors > 3) {
-          cell[i][j] = 0;
-          neighbors = 0;
-        }
+      // Necessitem saber si existeixen els neighbors.
     }
   }
   console.table(cellBlock(cellBlocks));

@@ -1,4 +1,14 @@
+function cellStatus() {
+  if (this.className === "alive") {
+    this.setAttribute("class", "dead");
+  } else {
+    this.setAttribute("class", "alive");
+  }
+}
+
 const htmlGenerator = (parameterRow, parameterColumn) => {
+  const rows = parameterRow;
+  const cols = parameterColumn;
   const gameBoard = document.querySelector(".game-container");
   const board = document.createElement("div");
   board.className = "boardDiv";
@@ -7,14 +17,15 @@ const htmlGenerator = (parameterRow, parameterColumn) => {
   let cell;
   for (let i = 0; i < parameterRow; i++) {
     row = document.createElement("div");
-    row.className = `rowDiv ${i}`;
 
     for (let j = 0; j < parameterColumn; j++) {
       ids++;
       cell = document.createElement("div");
-      cell.className = `cellDiv ${i}`;
+      cell.setAttribute("id", `${i}_${j}`);
+      cell.setAttribute("class", "dead");
       cell.classList.add(ids);
       row.appendChild(cell);
+      cell.addEventListener("click", cellStatus);
     }
     board.appendChild(row);
   }
