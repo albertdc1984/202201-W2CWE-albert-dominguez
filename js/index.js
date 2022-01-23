@@ -1,26 +1,5 @@
-const htmlGenerator = (parameterRow, parameterColumn) => {
-  const gameBoard = document.querySelector(".game-container");
-  const board = document.createElement("div");
-  board.className = "boardDiv";
-  let ids = 0;
-  let row;
-  let cell;
-  for (let i = 0; i < parameterRow; i++) {
-    row = document.createElement("div");
-    row.className = `rowDiv ${i}`;
-
-    for (let j = 0; j < parameterColumn; j++) {
-      ids++;
-      cell = document.createElement("div");
-      cell.className = `cellDiv ${i}`;
-      cell.classList.add(ids);
-      row.appendChild(cell);
-    }
-    board.appendChild(row);
-  }
-  gameBoard.appendChild(board);
-  return gameBoard;
-};
+const rows = 20;
+const columns = 20;
 
 const gameTable = (numberOfColumns, numberOfRows) => {
   const nestedArray = [];
@@ -30,12 +9,57 @@ const gameTable = (numberOfColumns, numberOfRows) => {
 
   for (let i = 0; i < numberOfColumns; i++) {
     for (let j = 0; j < numberOfRows; j++) {
-      nestedArray[j].push([0]);
+      nestedArray[i].push(0);
     }
   }
   console.table(nestedArray);
   return nestedArray;
 };
-gameTable();
 
-window.onload = () => htmlGenerator(40, 40);
+const arrayTable = gameTable(rows, columns);
+
+function cellStatus() {
+  const location = this.id.split("_");
+  const rowLocation = Number(location[0]);
+  const columnLocation = Number(location[1]);
+
+  if (this.className === "alive") {
+    this.setAttribute("class", "dead");
+    arrayTable[rowLocation][columnLocation] = 0;
+  } else {
+    this.setAttribute("class", "alive");
+    arrayTable[rowLocation][columnLocation] = 1;
+  }
+}
+
+const htmlGenerator = (parameterRow, parameterColumn) => {
+  const gameBoard = document.querySelector(".game-container");
+  const board = document.createElement("div");
+  board.className = "boardDiv";
+  let ids = 0;
+  let row;
+  let cell;
+
+  for (let i = 0; i < parameterRow; i++) {
+    row = document.createElement("div");
+    row.setAttribute("class", "row");
+    for (let j = 0; j < parameterColumn; j++) {
+      ids++;
+      cell = document.createElement("div");
+      cell.setAttribute("id", `${i}_${j}`);
+      cell.setAttribute("class", "dead");
+      cell.classList.add(ids);
+      row.appendChild(cell);
+      cell.addEventListener("click", cellStatus);
+    }
+    board.appendChild(row);
+  }
+
+  gameBoard.appendChild(board);
+  return board;
+};
+
+window.onload = () => {
+  htmlGenerator(rows, columns);
+  gameTable(rows, columns);
+};
