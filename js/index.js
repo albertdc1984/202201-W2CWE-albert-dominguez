@@ -2,7 +2,11 @@ const rows = 20;
 const columns = 20;
 const nestedArray = [];
 const nextTable = [];
+let started = false;
+let timer;
+const evolutionSpeed = 1000;
 const start = document.querySelector(".start-button");
+const stop = document.querySelector(".stop-button");
 
 const gameTable = (numberOfcolumns, numberOfRows) => {
   for (let i = 0; i < numberOfRows; i++) {
@@ -17,6 +21,7 @@ const gameTable = (numberOfcolumns, numberOfRows) => {
     }
   }
   console.table(nestedArray);
+  console.table(nextTable);
   return nestedArray;
 };
 
@@ -60,47 +65,55 @@ const htmlGenerator = (parameterRow, parameterColumn) => {
   gameBoard.appendChild(board);
   return board;
 };
-const neighborCount = (row, column) => {
+const neighborCount = () => {
+  debugger;
   let counter = 0;
-  const iNumber = Number(row);
-  const jNumber = Number(column);
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns; j++) {
+      if (i - 1 >= 0) {
+        if (nestedArray[i - 1][j] === 1) {
+          counter++;
+        }
+      }
 
-  if (iNumber - 1 >= 0) {
-    if (nestedArray[iNumber - 1][jNumber] === 1) {
-      counter++;
+      if (i - 1 >= 0 && j - 1 >= 0) {
+        if (nestedArray[i - 1][j - 1] === 1) {
+          counter++;
+        }
+      }
+
+      if (i - 1 >= 0 && j + 1 < columns) {
+        if (nestedArray[i - 1][j + 1] === 1) {
+          counter++;
+        }
+      }
+
+      if (i + 1 < rows && j - 1 >= 0) {
+        if (nestedArray[i + 1][j - 1] === 1) {
+          counter++;
+        }
+      }
+
+      if (i + 1 < rows && j + 1 < columns) {
+        if (nestedArray[i + 1][j + 1] === 1) {
+          counter++;
+        }
+      }
+
+      if (i + 1 < rows) {
+        if (nestedArray[i + 1][j] === 1) {
+          counter++;
+        }
+      }
     }
   }
-
-  if (iNumber - 1 >= 0 && jNumber - 1 >= 0) {
-    if (nestedArray[iNumber - 1][jNumber - 1] === 1) {
-      counter++;
-    }
-  }
-
-  if (iNumber - 1 >= 0 && jNumber + 1 < columns) {
-    if (nestedArray[iNumber - 1][jNumber + 1] === 1) {
-      counter++;
-    }
-  }
-
-  if (iNumber + 1 < rows && jNumber - 1 >= 0) {
-    if (nestedArray[iNumber + 1][jNumber - 1] === 1) counter++;
-  }
-
-  if (iNumber + 1 < rows && jNumber + 1 < columns) {
-    if (nestedArray[iNumber + 1][jNumber + 1] === 1) counter++;
-  }
-
-  if (iNumber + 1 < rows) {
-    if (nestedArray[iNumber + 1][jNumber] === 1) counter++;
-  }
-
   return counter;
 };
+
 function getNextTable() {
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < columns; j++) {
-      const neighbors = neighborCount(rows, columns);
+      const neighbors = neighborCount();
 
       if (nestedArray[i][j] === 1) {
         if (neighbors < 2) {
@@ -143,10 +156,23 @@ function evolve() {
   getNextTable();
   updatenestedArray();
   updateWorld();
+  if (started) {
+    timer = setTimeout(evolve, evolutionSpeed);
+  }
 }
+function startGame() {
+  if (!started) {
+    started = true;
+    evolve();
+  }
+}
+start.addEventListener("click", startGame());
+function stopGame() {
+  clearTimeout(timer);
+}
+stop.addEventListener("click", stopGame());
 
 window.onload = () => {
   htmlGenerator(rows, columns);
   gameTable(rows, columns);
-  start.addEventListener("click", evolve());
 };
