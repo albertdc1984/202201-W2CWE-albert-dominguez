@@ -13,25 +13,39 @@ const gameTable = (numberOfColumns, numberOfRows) => {
   return nestedArray;
 };
 
-const gameFive = gameTable(5, 5);
-console.log(gameFive);
+const cellBlocks = [
+  [[1], [1], [0]],
+  [[1], [1], [1]],
+  [[0], [0], [0]],
+];
+const logics = (cellBlock) => {
+  for (let i = 1; i < cellBlock.length; i++) {
+    for (let j = 1; cellBlock[0][0].length; j++) {
+      const cell = cellBlock[i][j];
+      let neighbors =
+        cell[i - 1][j - 1] +
+        cell[i - 1][j] +
+        cell[i - 1][j + 1] +
+        cell[i][j - 1] +
+        cell[i][j + 1] +
+        cell[i + 1][j - 1] +
+        cell[i + 1][j] +
+        cell[i + 1][j + 1];
 
-const logics = () => {
-  for (let i = 1; i < gameFive[0].length; i++) {
-    for (let j = 1; gameFive[0][0].length; j++) {
-      if (gameFive[i][j + 1] === 0 && gameFive[i - 1][j] === 0) {
-        gameFive[i][j] = 1;
-      }
+      if (cell[i - 1][j - 1])
+        if (neighbors < 2 || neighbors > 3) {
+          cell[i][j] = 0;
+          neighbors = 0;
+        }
     }
   }
-  return console.table(gameFive);
+  console.table(cellBlock(cellBlocks));
 };
 logics();
 console.table(gameTable(3, 3));
 describe("Given a tableGenerator funtion", () => {
   describe("When it recieves the value of 3 and 3", () => {
     test("Then is hould return a table of 3 rows & 3 columns", () => {
-      // Arrange
       const expectedResult = [
         [[0], [0], [0]],
         [[0], [0], [0]],
@@ -39,10 +53,32 @@ describe("Given a tableGenerator funtion", () => {
       ];
       const columnNumber = 3;
       const rowNumber = 3;
-      // Act
+
       const tableGenerator = gameTable(columnNumber, rowNumber);
-      // Assert
+
       expect(tableGenerator).toEqual(expectedResult);
+    });
+  });
+});
+
+describe("Given a logics function", () => {
+  describe("When it recieves a nested array with a living pattern", () => {
+    test("Then is should return a modified nested array", () => {
+      const expectedResult = [
+        [[1], [1], [0]],
+        [[1], [1], [1]],
+        [[0], [0], [0]],
+      ];
+
+      const cellBlocksTest = [
+        [[1], [1], [0]],
+        [[1], [0], [1]],
+        [[0], [0], [0]],
+      ];
+
+      const tableCheck = gameTable(cellBlocksTest);
+
+      expect(tableCheck).toEqual(expectedResult);
     });
   });
 });
