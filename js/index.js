@@ -2,12 +2,15 @@ const rows = 20;
 const columns = 20;
 const nestedArray = [];
 const nextTable = [];
-let started = false;
+const started = false;
 let timer;
 const evolutionSpeed = 1000;
-const start = document.querySelector(".start-button");
-const stop = document.querySelector(".stop-button");
-
+const randomN = () => {
+  if (Math.random() >= 0.5) {
+    return 1;
+  }
+  return 0;
+};
 const gameTable = (numberOfcolumns, numberOfRows) => {
   for (let i = 0; i < numberOfRows; i++) {
     nestedArray.push([]);
@@ -16,7 +19,8 @@ const gameTable = (numberOfcolumns, numberOfRows) => {
 
   for (let i = 0; i < numberOfcolumns; i++) {
     for (let j = 0; j < numberOfRows; j++) {
-      nestedArray[i].push(0);
+      const random = randomN();
+      nestedArray[i].push(random);
       nextTable[i].push(0);
     }
   }
@@ -27,15 +31,20 @@ const gameTable = (numberOfcolumns, numberOfRows) => {
 
 function cellStatus() {
   const location = this.id.split("_");
-  const rowLocation = Number(location[0]);
-  const columnumnLocation = Number(location[1]);
-
+  const rowLocation = location[0];
+  const columnLocation = location[1];
+  if (nestedArray[rowLocation][columnLocation] === 0) {
+    this.setAttribute("class", "dead");
+  }
+  if (nestedArray[rowLocation][columnLocation] === 1) {
+    this.setAttribute("class", "alive");
+  }
   if (this.className === "alive") {
     this.setAttribute("class", "dead");
-    nestedArray[rowLocation][columnumnLocation] = 0;
+    nestedArray[rowLocation][columnLocation] = 0;
   } else {
     this.setAttribute("class", "alive");
-    nestedArray[rowLocation][columnumnLocation] = 1;
+    nestedArray[rowLocation][columnLocation] = 1;
   }
 }
 
@@ -58,6 +67,9 @@ const htmlGenerator = (parameterRow, parameterColumn) => {
       cell.classList.add(ids);
       row.appendChild(cell);
       cell.addEventListener("click", cellStatus);
+      if (nestedArray[i][j] === 1) {
+        cell.setAttribute("class", "alive");
+      }
     }
     board.appendChild(row);
   }
@@ -65,55 +77,45 @@ const htmlGenerator = (parameterRow, parameterColumn) => {
   gameBoard.appendChild(board);
   return board;
 };
-const neighborCount = () => {
-  debugger;
+const neighborCount = (i, j) => {
   let counter = 0;
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < columns; j++) {
-      if (i - 1 >= 0) {
-        if (nestedArray[i - 1][j] === 1) {
-          counter++;
-        }
+  if (i >= 1 && i <= rows - 1) {
+    if (j >= 1 && j <= columns - 2) {
+      debugger;
+      if (nestedArray[i - 1][j - 1] === 1) {
+        counter++;
       }
-
-      if (i - 1 >= 0 && j - 1 >= 0) {
-        if (nestedArray[i - 1][j - 1] === 1) {
-          counter++;
-        }
+      if (nestedArray[i - 1][j] === 1) {
+        counter++;
       }
-
-      if (i - 1 >= 0 && j + 1 < columns) {
-        if (nestedArray[i - 1][j + 1] === 1) {
-          counter++;
-        }
+      if (nestedArray[i - 1][j + 1] === 1) {
+        counter++;
       }
-
-      if (i + 1 < rows && j - 1 >= 0) {
-        if (nestedArray[i + 1][j - 1] === 1) {
-          counter++;
-        }
+      if (nestedArray[i][j - 1] === 1) {
+        counter++;
       }
-
-      if (i + 1 < rows && j + 1 < columns) {
-        if (nestedArray[i + 1][j + 1] === 1) {
-          counter++;
-        }
+      if (nestedArray[i][j + 1] === 1) {
+        counter++;
       }
-
-      if (i + 1 < rows) {
-        if (nestedArray[i + 1][j] === 1) {
-          counter++;
-        }
+      if (nestedArray[i + 1][j - 1] === 1) {
+        counter++;
+      }
+      if (nestedArray[i + 1][j] === 1) {
+        counter++;
+      }
+      if (nestedArray[i + 1][j + 1] === 1) {
+        counter++;
       }
     }
   }
+
   return counter;
 };
 
 function getNextTable() {
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < columns; j++) {
-      const neighbors = neighborCount();
+      const neighbors = neighborCount(i, j);
 
       if (nestedArray[i][j] === 1) {
         if (neighbors < 2) {
@@ -161,18 +163,19 @@ function evolve() {
   }
 }
 function startGame() {
-  if (!started) {
-    started = true;
-    evolve();
-  }
+  const startButton = document.querySelector(".start-button");
+  startButton.onclick = evolve();
 }
-start.addEventListener("click", startGame());
+
 function stopGame() {
-  clearTimeout(timer);
+  const stopButton = document.querySelector(".stop-button");
+  stopButton.onclick = clearTimeout(timer);
 }
-stop.addEventListener("click", stopGame());
 
 window.onload = () => {
-  htmlGenerator(rows, columns);
   gameTable(rows, columns);
+  htmlGenerator(rows, columns);
+  getNextTable();
+  startGame();
+  stopGame();
 };
